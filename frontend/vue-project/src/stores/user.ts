@@ -4,56 +4,79 @@ import { defineStore } from 'pinia'
 export const useUserStore = defineStore('user', () => {
   // User Profile Data
   const profile = ref({
+    id: null as number | null,
     nickname: 'Guest',
     phoneNumber: '',
     defaultCity: 'Shanghai',
+    role: 'user',
+    token: '',
+    // FIX: Initialize this array so components don't crash
     populationTags: [] as string[]
   })
 
   // Authentication State
   const isLoggedIn = ref(false)
-  const isAdmin = ref(false) // <--- The specific flag you requested
+  const isAdmin = ref(false)
 
   /**
-   * Mock Login Function
-   * @param phone - The phone number entered
-   * @param role - 'user' or 'admin'
+   * Sets the user state based on the specific "0K" Register/Login Response
+   * @param apiData - The 'data' object from the response (containing 'token' and 'user')
    */
-  function login(phone: string, role: 'user' | 'admin' = 'user') {
-    isLoggedIn.value = true
-    profile.value.phoneNumber = phone
+  function setUserData(apiData: any) {
+    const userObj = apiData.user;
 
-    // Logic: If the role is admin OR the phone number is literally 'admin', grant admin rights
-    if (role === 'admin' || phone === 'admin') {
-      isAdmin.value = true
-      profile.value.nickname = 'Administrator'
+    // 1. Set Auth Flags
+    isLoggedIn.value = true;
+    profile.value.token = apiData.token;
+
+    // 2. Map User Details
+    profile.value.id = userObj.id;
+    profile.value.nickname = userObj.nickname;
+    profile.value.phoneNumber = userObj.phone;
+    profile.value.role = userObj.role;
+
+    // FIX: Map the backend 'tag' field (which might be null) to our array
+    // Assuming backend sends a comma-separated string or array, or null
+    if (Array.isArray(userObj.tag)) {
+        profile.value.populationTags = userObj.tag;
+    } else if (typeof userObj.tag === 'string') {
+        profile.value.populationTags = userObj.tag.split(',');
     } else {
-      isAdmin.value = false
-      profile.value.nickname = 'User ' + phone.slice(-4)
+        profile.value.populationTags = [];
+    }
+
+    // 3. Handle City
+    if (userObj.default_city_id) {
+        profile.value.defaultCity = String(userObj.default_city_id);
+    }
+
+    // 4. Set Admin Flag
+    if (userObj.role === 'admin') {
+      isAdmin.value = true;
+    } else {
+      isAdmin.value = false;
     }
   }
 
   function logout() {
-    isLoggedIn.value = false
-    isAdmin.value = false
+    isLoggedIn.value = false;
+    isAdmin.value = false;
     profile.value = {
+      id: null,
       nickname: 'Guest',
       phoneNumber: '',
       defaultCity: 'Shanghai',
-      populationTags: []
-    }
-  }
-
-  function updateProfile(newData: any) {
-    profile.value = { ...profile.value, ...newData }
+      role: 'user',
+      token: '',
+      populationTags: [] // Reset this too
+    };
   }
 
   return {
     profile,
     isLoggedIn,
     isAdmin,
-    login,
-    logout,
-    updateProfile
+    setUserData,
+    logout
   }
 })
