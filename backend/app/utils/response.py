@@ -9,5 +9,8 @@ def bad_request(message="BAD_REQUEST"):
 def unauthorized(message="UNAUTHORIZED"):
     return jsonify({"code": "UNAUTHORIZED", "message": message, "data": {}}), 401
 
+def forbidden(message="FORBIDDEN"):
+    return jsonify({"code": "FORBIDDEN", "message": message, "data": {}}), 403
+
 def conflict(message="CONFLICT"):
     return jsonify({"code": "CONFLICT", "message": message, "data": {}}), 409
