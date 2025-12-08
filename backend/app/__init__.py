@@ -3,6 +3,9 @@ from flask import Flask
 from backend.app.extensions import db
 from backend.app.api.auth.routes import bp as auth_bp
 from backend.app.api.users.routes import bp as users_bp
+from backend.app.api.data import bp as data_bp
+from backend.app.api.admin import bp as admin_bp
+from backend.app.tasks.scheduler import init_scheduler
 try:
     from flask_cors import CORS
 except ImportError:
@@ -21,4 +24,9 @@ def create_app():
              methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"])
     app.register_blueprint(auth_bp)
     app.register_blueprint(users_bp)
+    app.register_blueprint(data_bp)
+    app.register_blueprint(admin_bp)
+    
+    init_scheduler()
+    
     return app

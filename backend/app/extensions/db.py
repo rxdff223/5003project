@@ -11,11 +11,17 @@ def init_db():
     url = os.getenv("DATABASE_URL")
     if not url:
         url = "postgresql://postgres:postgres@localhost:5432/postgres"
-    pool = psycopg2.pool.ThreadedConnectionPool(1, 10, dsn=url)
+    try:
+        pool = psycopg2.pool.ThreadedConnectionPool(1, 10, dsn=url)
+    except Exception as e:
+        print(f"Warning: Database connection failed: {e}")
+        print("Application will run without database. Some features may not work.")
 
 def get_conn():
     if pool is None:
         init_db()
+    if pool is None:
+        raise Exception("Database pool not initialized. Database connection is not available.")
     return pool.getconn()
 
 def put_conn(conn):
