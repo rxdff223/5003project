@@ -10,7 +10,6 @@ export const useUserStore = defineStore('user', () => {
     defaultCity: 'Shanghai',
     role: 'user',
     token: '',
-    // FIX: Initialize this array so components don't crash
     populationTags: [] as string[]
   })
 
@@ -20,37 +19,31 @@ export const useUserStore = defineStore('user', () => {
 
   /**
    * Sets the user state based on the specific "0K" Register/Login Response
-   * @param apiData - The 'data' object from the response (containing 'token' and 'user')
    */
   function setUserData(apiData: any) {
     const userObj = apiData.user;
-
-    // 1. Set Auth Flags
     isLoggedIn.value = true;
     profile.value.token = apiData.token;
 
-    // 2. Map User Details
     profile.value.id = userObj.id;
     profile.value.nickname = userObj.nickname;
     profile.value.phoneNumber = userObj.phone;
     profile.value.role = userObj.role;
 
-    // FIX: Map the backend 'tag' field (which might be null) to our array
-    // Assuming backend sends a comma-separated string or array, or null
-    if (Array.isArray(userObj.tag)) {
-        profile.value.populationTags = userObj.tag;
-    } else if (typeof userObj.tag === 'string') {
-        profile.value.populationTags = userObj.tag.split(',');
+    // Handle Tag (Backend sends string or null)
+    if (userObj.tag) {
+        // Wrap single string in array for frontend compatibility
+        profile.value.populationTags = [userObj.tag];
     } else {
         profile.value.populationTags = [];
     }
 
-    // 3. Handle City
+    // Handle City
     if (userObj.default_city_id) {
         profile.value.defaultCity = String(userObj.default_city_id);
     }
 
-    // 4. Set Admin Flag
+    // Set Admin Flag
     if (userObj.role === 'admin') {
       isAdmin.value = true;
     } else {
@@ -68,15 +61,22 @@ export const useUserStore = defineStore('user', () => {
       defaultCity: 'Shanghai',
       role: 'user',
       token: '',
-      populationTags: [] // Reset this too
+      populationTags: []
     };
   }
 
+  function updateProfile(newData: any) {
+    profile.value = { ...profile.value, ...newData }
+  }
+
+  // --- RETURN BLOCK ---
+  // This defines what is accessible to your components
   return {
     profile,
     isLoggedIn,
     isAdmin,
     setUserData,
-    logout
+    logout,
+    updateProfile // <--- ADDED THIS (Fixes Error #2)
   }
 })
