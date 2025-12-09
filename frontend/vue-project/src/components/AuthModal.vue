@@ -45,7 +45,7 @@ const handleLogin = () => {
 
   const config = {
      method: 'post',
-     url: 'https://unhoping-tanya-convincingly.ngrok-free.dev/auth/login',
+     url: 'http://127.0.0.1:80/auth/login',
      headers: {
         'Access-Control-Request-Method': 'POST',
         'Access-Control-Request-Headers': 'Content-Type,Authorization',
@@ -69,20 +69,18 @@ const handleLogin = () => {
 
         // Close the popup
         closeModal();
-     } else {
-        console.log(resData.code)
-        message.error(resData.message || 'Login failed');
      }
   })
   .catch(function (error) {
      console.log(error);
+     message.error('Login failed');
   })
   .finally(() => {
      // Ensure loading stops regardless of success or failure
      isLoading.value = false;
   });
 
-  message.warning('Login API not fully configured yet, use Register to test!');
+
 }
 
 // --- REAL REGISTER FUNCTION (FIXED) ---
@@ -109,7 +107,7 @@ const handleRegister = () => {
   // 3. Axios Config
   const config = {
     method: 'post',
-    url: 'https://unhoping-tanya-convincingly.ngrok-free.dev/auth/register', // Ensure this matches your backend route
+    url: 'http://127.0.0.1:80/auth/register', // Ensure this matches your backend route
     headers: {
       'Content-Type': 'application/json'
     },
