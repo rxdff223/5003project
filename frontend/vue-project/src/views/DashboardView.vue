@@ -20,11 +20,11 @@ const currentPollutant = ref('pm25');
 
 // Mock Hot Searches
 const hotSearches = ref([
-  { rank: 1, city: 'Beijing', visits: 1200 },
-  { rank: 2, city: 'Shanghai', visits: 980 },
-  { rank: 3, city: 'Guangzhou', visits: 850 },
-  { rank: 4, city: 'Chengdu', visits: 620 },
-  { rank: 5, city: 'Shenzhen', visits: 540 }
+  { rank: 1, city: 'Beijing', visits: 43 },
+  { rank: 2, city: 'Shanghai', visits: 39 },
+  { rank: 3, city: 'Guangzhou', visits: 30 },
+  { rank: 4, city: 'Chengdu', visits: 15 },
+  { rank: 5, city: 'Shenzhen', visits: 11 }
 ]);
 
 const cityMap: Record<string, number> = {
@@ -141,7 +141,7 @@ onMounted(() => {
 <template>
   <div class="dashboard">
     <FilterBar @search="fetchHistoryData" />
-    <HealthAlertBanner />
+
 
     <a-row :gutter="16">
       <a-col :span="16">

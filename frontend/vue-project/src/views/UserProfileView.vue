@@ -11,8 +11,9 @@ const isLoading = ref(false)
 const cityMap: Record<string, number> = {
   'Beijing': 1,
   'Shanghai': 2,
-  'London': 3,
-  'Guangzhou': 4
+  'Guangzhou': 3,
+  'Shenzhen': 4,
+  'Chengdu': 5
 }
 
 // Return type explicitly includes undefined

@@ -39,7 +39,7 @@ const handleLogout = () => {
     <!-- HEADER: Global Actions (Logo + Login) -->
     <a-layout-header class="header">
       <div class="header-left">
-        <div class="logo">EcoHealth</div>
+        <div class="logo">Eco Air Quality</div>
       </div>
 
       <div class="header-right">
