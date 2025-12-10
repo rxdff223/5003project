@@ -27,7 +27,7 @@ const registerForm = reactive({
   confirmPassword: ''
 })
 
-// --- REAL LOGIN (Placeholder until you confirm Login API) ---
+
 const handleLogin = () => {
   // ... (Keeping existing login logic or waiting for your confirmation)
   if (!loginForm.phone || !loginForm.password) {
@@ -62,9 +62,6 @@ const handleLogin = () => {
 
      if (resData.code === 'OK') {
         message.success('Login successful!');
-
-        // *** THIS WAS MISSING ***
-        // update the global store with the user data
         userStore.setUserData(resData.data);
 
         // Close the popup
@@ -78,12 +75,14 @@ const handleLogin = () => {
   .finally(() => {
      // Ensure loading stops regardless of success or failure
      isLoading.value = false;
+     loginForm.phone = '';
+     loginForm.password = '';
   });
 
 
 }
 
-// --- REAL REGISTER FUNCTION (FIXED) ---
+
 const handleRegister = () => {
   // 1. Frontend Validation
   if (!registerForm.nickname || !registerForm.phone || !registerForm.password) {
@@ -165,7 +164,11 @@ const handleRegister = () => {
       console.error('Register Error:', error);
     })
     .finally(() => {
-      isLoading.value = false
+      isLoading.value = false;
+      registerForm.phone = '';
+      registerForm.nickname = '';
+      registerForm.password = '';
+      registerForm.confirmPassword = ''
     })
 }
 
