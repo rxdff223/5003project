@@ -68,7 +68,7 @@ def query_air_quality():
         end_time = request.args.get('end_time', default=None, type=str)
         page = request.args.get('page', default=1, type=int)
         page_size = request.args.get('page_size', default=20, type=int)
-        
+
         if not city_id:
             return bad_request('city_id_required')
         
@@ -89,12 +89,10 @@ def query_air_quality():
         items, total, error = air_quality.query_air_quality_data(
             city_id, start_time, end_time, None, page, page_size
         )
+        print(items, total, error)
         
         if error:
             return bad_request('query_failed')
-        
-        user_id = request.user.get('id')
-        analytics.log_user_action(user_id, 'view_data', city_id)
         
         return ok('success', {
             'items': items,
